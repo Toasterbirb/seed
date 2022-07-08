@@ -7,7 +7,7 @@ namespace seed
 
 
 	/*** Templates ***/
-	/* Find the highest value in a list */
+	/* Find the lowest or highest value in a list */
 	template<typename T>
 	T Min(T values[], const int& value_count)
 	{
@@ -68,6 +68,7 @@ namespace seed
 		return current_max;
 	}
 
+	/* Get the arverage value of an array / vector */
 	template<typename T>
 	double Average(std::vector<T> values)
 	{

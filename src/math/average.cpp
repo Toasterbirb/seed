@@ -26,7 +26,13 @@ namespace seed
 			4, 5, 1.6f, 16.5f, 3.6f
 		};
 
+		std::vector<float> valueVector =
+		{
+			4, 5, 1.6f, 16.5f, 3.6f
+		};
+
 		CHECK(Round(Average(values, 5), 2) == 6.14);
+		CHECK(Round(Average(valueVector), 2) == 6.14);
 	}
 
 	TEST_CASE("Calculate average from int array")
@@ -36,7 +42,13 @@ namespace seed
 			4, 5, 1, 16, 3
 		};
 
+		std::vector<int> valueVector =
+		{
+			4, 5, 1, 16, 3
+		};
+
 		CHECK(Round(Average(values, 5), 2) == 5.8);
+		CHECK(Round(Average(valueVector), 2) == 5.8);
 	}
 
 }
