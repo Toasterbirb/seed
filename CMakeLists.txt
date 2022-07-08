@@ -22,7 +22,8 @@ if (TESTS)
 		src/math/round.cpp)
 
 	set(STRING_SRC
-		src/strings/clean_decimals.cpp)
+		src/strings/clean_decimals.cpp
+		src/strings/trim_char.cpp)
 
 	add_executable(seed_tests
 		src/main.cpp

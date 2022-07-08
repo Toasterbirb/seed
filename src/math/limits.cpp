@@ -1,9 +1,30 @@
-#include "Math.hpp"
+#include "Limits.tpp"
 #include "doctest/doctest.h"
 
 namespace seed
 {
 	/*** Template tests ***/
+	TEST_CASE("Value clamping")
+	{
+		/* Integers */
+		CHECK(Clamp(5, -5, 5) == 5);
+		CHECK(Clamp(5, 0, 10) == 5);
+		CHECK(Clamp(5, 6, 10) == 6);
+		CHECK(Clamp(5, 0, 4) == 4);
+
+		/* Floats */
+		CHECK(Clamp(5.00f, -5.00f, 5.00f) == 5.00f);
+		CHECK(Clamp(5.00f, 0.00f, 10.00f) == 5.00f);
+		CHECK(Clamp(5.00f, 6.00f, 10.00f) == 6.00f);
+		CHECK(Clamp(5.00f, 0.00f, 4.00f) == 4.00f);
+
+		/* Doubles */
+		CHECK(Clamp(5.00, -5.00, 5.00) == 5.00);
+		CHECK(Clamp(5.00, 0.00, 10.00) == 5.00);
+		CHECK(Clamp(5.00, 6.00, 10.00) == 6.00);
+		CHECK(Clamp(5.00, 0.00, 4.00) == 4.00);
+	}
+
 	TEST_CASE("Find the lowest value from a list of values")
 	{
 		SUBCASE("Integers")
