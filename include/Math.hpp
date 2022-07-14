@@ -1,5 +1,6 @@
 #include "std.hpp"
-#include "Limits.tpp"
+#include "Average.hpp"
+#include "Limits.hpp"
 
 namespace seed
 {

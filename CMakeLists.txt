@@ -33,3 +33,9 @@ if (TESTS)
 	target_precompile_headers(seed_tests
 		PRIVATE include/std.hpp)
 endif()
+
+add_library(seed STATIC
+	${MATH_SRC}
+	${STRING_SRC})
+
+target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)

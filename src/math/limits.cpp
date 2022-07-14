@@ -1,4 +1,4 @@
-#include "Limits.tpp"
+#include "Limits.hpp"
 #include "doctest/doctest.h"
 
 namespace seed
