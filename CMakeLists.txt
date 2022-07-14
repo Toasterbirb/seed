@@ -25,9 +25,13 @@ if (TESTS)
 		src/strings/clean_decimals.cpp
 		src/strings/trim_char.cpp)
 
+	set(FILESYSTEM_SRC
+		src/filesystem/filepaths.cpp)
+
 	add_executable(seed_tests
 		src/main.cpp
 		${MATH_SRC}
+		${FILESYSTEM_SRC}
 		${STRING_SRC})
 
 	target_precompile_headers(seed_tests
@@ -36,6 +40,7 @@ endif()
 
 add_library(seed STATIC
 	${MATH_SRC}
+	${FILESYSTEM_SRC}
 	${STRING_SRC})
 
 target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)
