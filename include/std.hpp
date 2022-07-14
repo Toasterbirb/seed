@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <stdlib.h>
 #include <stdio.h>
 #include <filesystem>

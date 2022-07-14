@@ -14,33 +14,41 @@ option(TESTS "Compile the test binary" ON)
 # Headers
 include_directories(include/ vendor/)
 
+set(MATH_SRC
+	src/math/average.cpp
+	src/math/normalize.cpp
+	src/math/limits.cpp
+	src/math/round.cpp)
+
+set(STRING_SRC
+	src/strings/clean_decimals.cpp
+	src/strings/trim_char.cpp)
+
+set(FILESYSTEM_SRC
+	src/filesystem/filepaths.cpp)
+
+set (CRYPTO_SRC
+	src/crypto/md5sum.cpp)
+
 if (TESTS)
-	set(MATH_SRC
-		src/math/average.cpp
-		src/math/normalize.cpp
-		src/math/limits.cpp
-		src/math/round.cpp)
-
-	set(STRING_SRC
-		src/strings/clean_decimals.cpp
-		src/strings/trim_char.cpp)
-
-	set(FILESYSTEM_SRC
-		src/filesystem/filepaths.cpp)
-
 	add_executable(seed_tests
 		src/main.cpp
+		${CRYPTO_SRC}
 		${MATH_SRC}
 		${FILESYSTEM_SRC}
 		${STRING_SRC})
 
 	target_precompile_headers(seed_tests
 		PRIVATE include/std.hpp)
+
+	target_link_libraries(seed_tests crypto)
 endif()
 
 add_library(seed STATIC
+	${CRYPTO_SRC}
 	${MATH_SRC}
 	${FILESYSTEM_SRC}
 	${STRING_SRC})
 
 target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)
+target_link_libraries(seed crypto)
