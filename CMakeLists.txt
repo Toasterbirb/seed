@@ -25,7 +25,8 @@ set(STRING_SRC
 	src/strings/trim_char.cpp)
 
 set(FILESYSTEM_SRC
-	src/filesystem/filepaths.cpp)
+	src/filesystem/filepaths.cpp
+	src/filesystem/fileio.cpp)
 
 set (CRYPTO_SRC
 	src/crypto/md5sum.cpp)
