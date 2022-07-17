@@ -22,11 +22,15 @@ namespace seed
 		std::string data() const;
 		int size() const;
 
-		bool starts_with(const seed::string& text) const;
-		bool ends_with(const seed::string& text) const;
+		bool starts_with(seed::string text) const;
+		bool ends_with(seed::string text) const;
 		bool is_digit() const;
 
+		int find(seed::string text) const;
+
 		string clean_decimals() const;
+		string trim(char c) const;
+		string replace(seed::string old_str, seed::string new_str) const;
 
 		/* Compare to another seed::string */
 		bool operator==(const seed::string& other) const

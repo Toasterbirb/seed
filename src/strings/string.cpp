@@ -140,13 +140,13 @@ namespace seed
 		CHECK(seed_string.size() == 4);
 	}
 
-	bool string::starts_with(const seed::string& text) const
+	bool string::starts_with(seed::string text) const
 	{
 		/* Check if the token string is longer */
-		if (text.size() > p_data.size())
+		if (text.size() > data().size())
 			return false;
 
-		if (p_data.substr(0, text.size()) == text.data())
+		if (data().substr(0, text.size()) == text.data())
 			return true;
 
 		return false;
@@ -163,13 +163,13 @@ namespace seed
 		CHECK_FALSE(hello_world.starts_with("hello another world"));
 	}
 
-	bool string::ends_with(const seed::string& text) const
+	bool string::ends_with(seed::string text) const
 	{
 		/* Check if the token string is longer */
-		if (text.size() > p_data.size())
+		if (text.size() > data().size())
 			return false;
 
-		if (p_data.substr(p_data.size() - text.size(), text.size()) == text.data())
+		if (data().substr(size() - text.size(), text.size()) == text.data())
 			return true;
 
 		return false;
@@ -193,7 +193,7 @@ namespace seed
 			return false;
 
 		for (int i = 0; i < size(); i++)
-			if (p_data[i] < 44 || p_data[i] > 58)
+			if (data()[i] < 44 || data()[i] > 58)
 				return false;
 
 		return true;
@@ -237,7 +237,7 @@ namespace seed
 		if (!is_digit())
 			return *this;
 
-		return CleanDecimals(p_data);
+		return CleanDecimals(data());
 	}
 
 	TEST_CASE("Clean unnecessary decimals from floating point values")
@@ -265,6 +265,100 @@ namespace seed
 
 		decimal_value = "-0,9300";
 		CHECK(decimal_value.clean_decimals() == "-0,93");
+	}
+
+	string string::trim(char c) const
+	{
+		return TrimChar(data(), c);
+	}
+
+	TEST_CASE("Trim chars around the string")
+	{
+		string string_with_whitespaces;
+
+		SUBCASE("Trim the beginning")
+		{
+			string_with_whitespaces = "    asdf";
+		}
+
+		SUBCASE("Trim the end")
+		{
+			string_with_whitespaces = "asdf     ";
+		}
+
+		SUBCASE("Trim both begnning and the end")
+		{
+			string_with_whitespaces = "     asdf    ";
+		}
+
+		CHECK(string_with_whitespaces.trim(' ') == "asdf");
+	}
+
+	int string::find(seed::string text) const
+	{
+		/* Check if the text we are looking for even fits into the parent string */
+		if (size() < text.size())
+			return -1;
+
+		/* Find the first character */
+		for (int i = 0; i < size(); i++)
+		{
+			if (data()[i] == text.data()[0])
+			{
+				/* First char was found, check if the characters next to it are
+				 * the rest of the text we are looking for */
+				bool mismatch = false;
+
+				for (int j = 0; j < text.size(); j++)
+				{
+					if (data()[i + j] != text.data()[j])
+					{
+						mismatch = true;
+						break;
+					}
+				}
+
+				if (!mismatch)
+					return i;
+			}
+		}
+
+		return -1;
+	}
+
+	TEST_CASE("Find the first occurrence of a string inside of another string")
+	{
+		string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+		CHECK(text.find("ipsum") == 6);
+		CHECK(text.find("amet") == 22);
+		CHECK(text.find("lmao") == -1);
+
+		string short_text = "test";
+		CHECK(text.find("longer text") == -1);
+	}
+
+	string string::replace(seed::string old_str, seed::string new_str) const
+	{
+		/* Find the old_str */
+		int start_index = this->find(old_str);
+
+		/* If the old_str wasn't found, don't do anything */
+		if (start_index == -1)
+			return *this;
+
+		/* Replace old_str in result with new_str */
+		return data().replace(start_index, old_str.size(), new_str.data());
+	}
+
+	TEST_CASE("Replace parts of the string")
+	{
+		string hello = "hello world";
+
+		CHECK(hello.replace("world", "planet") == "hello planet");
+		CHECK(hello.replace("hi", "bye") == "hello world");
+		CHECK(hello.replace("asaalskjdhflaskjdhflaksjdhf", "asdf") == "hello world");
+		CHECK(hello.replace("", "p") == "hello world");
+		CHECK(hello.replace(" ", "_") == "hello_world");
 	}
 
 	/* Operator overload tests */
