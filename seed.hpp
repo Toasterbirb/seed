@@ -2,3 +2,4 @@
 #include "include/Strings.hpp"
 #include "include/Files.hpp"
 #include "include/Crypto.hpp"
+#include "include/HelloWorld.hpp"

@@ -28,8 +28,11 @@ set(FILESYSTEM_SRC
 	src/filesystem/filepaths.cpp
 	src/filesystem/fileio.cpp)
 
-set (CRYPTO_SRC
+set(CRYPTO_SRC
 	src/crypto/md5sum.cpp)
+
+set(MISC_SRC
+	src/misc/helloworld.cpp)
 
 if (TESTS)
 	add_executable(seed_tests
@@ -37,7 +40,8 @@ if (TESTS)
 		${CRYPTO_SRC}
 		${MATH_SRC}
 		${FILESYSTEM_SRC}
-		${STRING_SRC})
+		${STRING_SRC}
+		${MISC_SRC})
 
 	target_precompile_headers(seed_tests
 		PRIVATE include/std.hpp)
@@ -49,7 +53,8 @@ add_library(seed STATIC
 	${CRYPTO_SRC}
 	${MATH_SRC}
 	${FILESYSTEM_SRC}
-	${STRING_SRC})
+	${STRING_SRC}
+	${MISC_SRC})
 
 target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)
 target_link_libraries(seed crypto)
