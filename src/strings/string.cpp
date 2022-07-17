@@ -119,7 +119,7 @@ namespace seed
 
 	std::string string::data() const
 	{
-		return this->p_data.data();
+		return this->p_data;
 	}
 
 	TEST_CASE("Get the value of a string")
@@ -127,6 +127,18 @@ namespace seed
 		string seed_string = "hello world";
 		std::string std_string = "hello world";
 		CHECK(seed_string.data() == std_string);
+	}
+
+	std::string& string::mutable_data()
+	{
+		return this->p_data;
+	}
+
+	TEST_CASE("Edit the std::string directly")
+	{
+		string text = "testing...";
+		text.mutable_data()[1] = 'a';
+		CHECK(text == "tasting...");
 	}
 
 	int string::size() const
@@ -230,6 +242,20 @@ namespace seed
 		}
 	}
 
+	bool string::empty() const
+	{
+		return data().empty();
+	}
+
+	TEST_CASE("Check if a string is empty or not")
+	{
+		string text = "";
+		CHECK(text.empty());
+
+		text = "asd";
+		CHECK_FALSE(text.empty());
+	}
+
 	string string::clean_decimals() const
 	{
 		/* Check if the string even has any chars in it.
@@ -296,8 +322,16 @@ namespace seed
 
 	int string::find(seed::string text) const
 	{
+		/* Check if the strings are the same */
+		if (*this == text)
+			return 0;
+
 		/* Check if the text we are looking for even fits into the parent string */
 		if (size() < text.size())
+			return -1;
+
+		/* Check if the target text has any chars in it */
+		if (text.size() == 0)
 			return -1;
 
 		/* Find the first character */
@@ -332,6 +366,8 @@ namespace seed
 		CHECK(text.find("ipsum") == 6);
 		CHECK(text.find("amet") == 22);
 		CHECK(text.find("lmao") == -1);
+		CHECK(text.find("") == -1);
+		CHECK(text.find(text) == 0);
 
 		string short_text = "test";
 		CHECK(text.find("longer text") == -1);
@@ -359,6 +395,21 @@ namespace seed
 		CHECK(hello.replace("asaalskjdhflaskjdhflaksjdhf", "asdf") == "hello world");
 		CHECK(hello.replace("", "p") == "hello world");
 		CHECK(hello.replace(" ", "_") == "hello_world");
+	}
+
+	void string::clear()
+	{
+		p_data.clear();
+	}
+
+	TEST_CASE("Clear the string")
+	{
+		string text = "asdf";
+		CHECK(text == "asdf");
+
+		text.clear();
+		CHECK(text == "");
+		CHECK(text.empty());
 	}
 
 	/* Operator overload tests */

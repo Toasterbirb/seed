@@ -20,17 +20,21 @@ namespace seed
 		string(const long& value);
 
 		std::string data() const;
+		std::string& mutable_data();
 		int size() const;
 
 		bool starts_with(seed::string text) const;
 		bool ends_with(seed::string text) const;
 		bool is_digit() const;
+		bool empty() const;
 
 		int find(seed::string text) const;
 
 		string clean_decimals() const;
 		string trim(char c) const;
 		string replace(seed::string old_str, seed::string new_str) const;
+
+		void clear();
 
 		/* Compare to another seed::string */
 		bool operator==(const seed::string& other) const
