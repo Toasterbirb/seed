@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(TESTS "Compile the test binary" ON)
+option(BUILD_LIB "Compile the static library" ON)
 
 # Headers
 include_directories(include/ vendor/)
@@ -51,12 +52,14 @@ if (TESTS)
 	target_link_libraries(seed_tests crypto)
 endif()
 
-add_library(seed STATIC
-	${CRYPTO_SRC}
-	${MATH_SRC}
-	${FILESYSTEM_SRC}
-	${STRING_SRC}
-	${MISC_SRC})
+if (BUILD_LIB)
+	add_library(seed STATIC
+		${CRYPTO_SRC}
+		${MATH_SRC}
+		${FILESYSTEM_SRC}
+		${STRING_SRC}
+		${MISC_SRC})
 
-target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)
-target_link_libraries(seed crypto)
+	target_compile_definitions(seed PRIVATE -DDOCTEST_CONFIG_DISABLE)
+	target_link_libraries(seed crypto)
+endif()
