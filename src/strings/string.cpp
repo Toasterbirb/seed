@@ -2,6 +2,9 @@
 #include "String.hpp"
 #include "Strings.hpp"
 
+#define UPPERCASE_ALPHABET "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define LOWERCASE_ALPHABET "abcdefghijklmnopqrstuvwxyz"
+
 namespace seed
 {
 	string::string()
@@ -285,6 +288,84 @@ namespace seed
 		}
 	}
 
+	bool string::is_upper() const
+	{
+		for (int i = 0; i < size(); i++)
+			if (is_lower_case(data()[i]))
+				return false;
+
+		return true;
+	}
+
+	TEST_CASE("Check if the entire string is in uppercase")
+	{
+		string up_alphabet = UPPERCASE_ALPHABET;
+		CHECK(up_alphabet.is_upper());
+
+		string low_alphabet = LOWERCASE_ALPHABET;
+		CHECK_FALSE(low_alphabet.is_upper());
+
+		string mixed = (seed::string)UPPERCASE_ALPHABET + (seed::string)LOWERCASE_ALPHABET;
+		CHECK_FALSE(mixed.is_upper());
+	}
+
+	bool string::is_lower() const
+	{
+		for (int i = 0; i < size(); i++)
+			if (is_upper_case(data()[i]))
+				return false;
+
+		return true;
+	}
+
+	TEST_CASE("Check if the entire string is in lowercase")
+	{
+		string up_alphabet = UPPERCASE_ALPHABET;
+		CHECK_FALSE(up_alphabet.is_lower());
+
+		string low_alphabet = LOWERCASE_ALPHABET;
+		CHECK(low_alphabet.is_lower());
+
+		string mixed = (seed::string)UPPERCASE_ALPHABET + (seed::string)LOWERCASE_ALPHABET;
+		CHECK_FALSE(mixed.is_lower());
+	}
+
+	bool string::is_letters(bool accept_whitespace) const
+	{
+		for (int i = 0; i < size(); i++)
+			if (!is_letter(data()[i]))
+			{
+				if (!accept_whitespace)
+					return false;
+				else if (data()[i] == ' ')
+					continue;
+			}
+
+		return true;
+	}
+
+	TEST_CASE("Check if the entire string consists of only letters")
+	{
+		string up_alphabet = UPPERCASE_ALPHABET;
+		CHECK(up_alphabet.is_letters());
+
+		string low_alphabet = LOWERCASE_ALPHABET;
+		CHECK(low_alphabet.is_letters());
+
+		string numbers = "0123456789";
+		CHECK_FALSE(numbers.is_letters());
+
+		string mixed = "ABSDF4234kljdfgf";
+		CHECK_FALSE(mixed.is_letters());
+
+		string special_chars = "!\"#¤%&/()=@£$‰‚{[]";
+		CHECK_FALSE(special_chars.is_letters());
+
+		string text_with_whitespaces = "Hello world";
+		CHECK_FALSE(text_with_whitespaces.is_letters());
+		CHECK(text_with_whitespaces.is_letters(true));
+	}
+
 	bool string::empty() const
 	{
 		return data().empty();
@@ -299,113 +380,7 @@ namespace seed
 		CHECK_FALSE(text.empty());
 	}
 
-	string string::clean_decimals() const
-	{
-		/* Check if the string even has any chars in it.
-		 * If so, cancel */
-		if (!is_number())
-			return *this;
 
-		return CleanDecimals(data());
-	}
-
-	TEST_CASE("Clean unnecessary decimals from floating point values")
-	{
-		string decimal_value = 49.025f;
-		CHECK(decimal_value.clean_decimals() == "49.025");
-
-		decimal_value = 12.00000f;
-		CHECK(decimal_value.clean_decimals() == "12");
-
-		decimal_value = -12.00000f;
-		CHECK(decimal_value.clean_decimals() == "-12");
-
-		decimal_value = "testing...";
-		CHECK(decimal_value.clean_decimals() == "testing...");
-
-		decimal_value = "-testing...";
-		CHECK(decimal_value.clean_decimals() == "-testing...");
-
-		decimal_value = 0.000;
-		CHECK(decimal_value.clean_decimals() == "0");
-
-		decimal_value = "0,9300";
-		CHECK(decimal_value.clean_decimals() == "0,93");
-
-		decimal_value = "-0,9300";
-		CHECK(decimal_value.clean_decimals() == "-0,93");
-	}
-
-	string string::trim(char c) const
-	{
-		return TrimChar(data(), c);
-	}
-
-	TEST_CASE("Trim chars around the string")
-	{
-		string string_with_whitespaces;
-
-		SUBCASE("Trim the beginning")
-		{
-			string_with_whitespaces = "    asdf";
-		}
-
-		SUBCASE("Trim the end")
-		{
-			string_with_whitespaces = "asdf     ";
-		}
-
-		SUBCASE("Trim both begnning and the end")
-		{
-			string_with_whitespaces = "     asdf    ";
-		}
-
-		CHECK(string_with_whitespaces.trim(' ') == "asdf");
-	}
-
-	string string::trim_until(char c, trim_mode mode) const
-	{
-		seed::string result = data();
-		int start_index = 0;
-		int end_index = 0;
-
-		/* Trim from the beginning */
-		if (mode != string::trim_mode::end)
-		{
-			start_index = result.find_char(c);
-			result = result.data().substr(start_index + 1, result.size() - start_index - 1);
-		}
-
-		/* Trim from the end */
-		if (mode != string::trim_mode::start)
-		{
-			end_index = result.find_last_char(c);
-			result = result.data().substr(0, end_index);
-		}
-
-		return result;
-	}
-
-	TEST_CASE("Trim the text until some specific char is encountered")
-	{
-		string text = "<div>text</div>";
-
-		SUBCASE("Trim from the beginning")
-		{
-			CHECK(text.trim_until('>') == "text</div>");
-			CHECK(text.trim_until('>', string::trim_mode::start) == "text</div>");
-		}
-
-		SUBCASE("Trim from the end")
-		{
-			CHECK(text.trim_until('<', string::trim_mode::end) == "<div>text");
-		}
-
-		SUBCASE("Trim from both sides")
-		{
-			CHECK(text.trim_until('t', string::trim_mode::both) == "ex");
-		}
-	}
 
 	int string::find(seed::string text) const
 	{
@@ -545,6 +520,43 @@ namespace seed
 		return -1;
 	}
 
+	string string::clean_decimals() const
+	{
+		/* Check if the string even has any chars in it.
+		 * If so, cancel */
+		if (!is_number())
+			return *this;
+
+		return CleanDecimals(data());
+	}
+
+	TEST_CASE("Clean unnecessary decimals from floating point values")
+	{
+		string decimal_value = 49.025f;
+		CHECK(decimal_value.clean_decimals() == "49.025");
+
+		decimal_value = 12.00000f;
+		CHECK(decimal_value.clean_decimals() == "12");
+
+		decimal_value = -12.00000f;
+		CHECK(decimal_value.clean_decimals() == "-12");
+
+		decimal_value = "testing...";
+		CHECK(decimal_value.clean_decimals() == "testing...");
+
+		decimal_value = "-testing...";
+		CHECK(decimal_value.clean_decimals() == "-testing...");
+
+		decimal_value = 0.000;
+		CHECK(decimal_value.clean_decimals() == "0");
+
+		decimal_value = "0,9300";
+		CHECK(decimal_value.clean_decimals() == "0,93");
+
+		decimal_value = "-0,9300";
+		CHECK(decimal_value.clean_decimals() == "-0,93");
+	}
+
 	TEST_CASE("Find the first occurrence of a char, but in reverse")
 	{
 		string text = "lmao";
@@ -578,6 +590,179 @@ namespace seed
 		CHECK(hello.replace("asaalskjdhflaskjdhflaksjdhf", "asdf") == "hello world");
 		CHECK(hello.replace("", "p") == "hello world");
 		CHECK(hello.replace(" ", "_") == "hello_world");
+	}
+
+	string string::reverse() const
+	{
+		/* You can't really reverse chars with length of <= 1 */
+		if (size() < 2)
+			return *this;
+
+		char result[size() + 1];
+		for (int i = size() - 1; i > -1; i--)
+			result[(size() - 1) - i] = data()[i];
+
+		/* Add the null termination char */
+		result[size()] = 0;
+
+		return result;
+	}
+
+	TEST_CASE("Reverse the string")
+	{
+		string numbers = "12345";
+		CHECK(numbers.reverse() == "54321");
+
+		string text = "asdf";
+		CHECK(text.reverse() == "fdsa");
+
+		string textB = "hello world";
+		CHECK(textB.reverse() == "dlrow olleh");
+
+		string empty_string = "";
+		CHECK(empty_string.reverse() == "");
+
+		string single_char_string = "a";
+		CHECK(single_char_string.reverse() == "a");
+
+		string short_str = "ab";
+		CHECK(short_str.reverse() == "ba");
+
+		string null_str;
+		CHECK(null_str.reverse() == "");
+	}
+
+	string string::trim(char c) const
+	{
+		return TrimChar(data(), c);
+	}
+
+	TEST_CASE("Trim chars around the string")
+	{
+		string string_with_whitespaces;
+
+		SUBCASE("Trim the beginning")
+		{
+			string_with_whitespaces = "    asdf";
+		}
+
+		SUBCASE("Trim the end")
+		{
+			string_with_whitespaces = "asdf     ";
+		}
+
+		SUBCASE("Trim both begnning and the end")
+		{
+			string_with_whitespaces = "     asdf    ";
+		}
+
+		CHECK(string_with_whitespaces.trim(' ') == "asdf");
+	}
+
+	string string::trim_until(char c, trim_mode mode) const
+	{
+		seed::string result = data();
+		int start_index = 0;
+		int end_index = 0;
+
+		/* Trim from the beginning */
+		if (mode != string::trim_mode::end)
+		{
+			start_index = result.find_char(c);
+			result = result.data().substr(start_index + 1, result.size() - start_index - 1);
+		}
+
+		/* Trim from the end */
+		if (mode != string::trim_mode::start)
+		{
+			end_index = result.find_last_char(c);
+			result = result.data().substr(0, end_index);
+		}
+
+		return result;
+	}
+
+	TEST_CASE("Trim the text until some specific char is encountered")
+	{
+		string text = "<div>text</div>";
+
+		SUBCASE("Trim from the beginning")
+		{
+			CHECK(text.trim_until('>') == "text</div>");
+			CHECK(text.trim_until('>', string::trim_mode::start) == "text</div>");
+		}
+
+		SUBCASE("Trim from the end")
+		{
+			CHECK(text.trim_until('<', string::trim_mode::end) == "<div>text");
+		}
+
+		SUBCASE("Trim from both sides")
+		{
+			CHECK(text.trim_until('t', string::trim_mode::both) == "ex");
+		}
+	}
+
+	string string::to_upper() const
+	{
+		seed::string result = data();
+
+		for (int i = 0; i < size(); i++)
+		{
+			if (is_lower_case(result.data()[i]))
+				result.mutable_data()[i] -= 32;
+		}
+
+		return result;
+	}
+
+	TEST_CASE("Change all letters in the string to uppercase")
+	{
+		string alphabet = LOWERCASE_ALPHABET;
+		CHECK(alphabet.to_upper() == UPPERCASE_ALPHABET);
+
+		string text_with_special_chars = "hello -world_123!!?";
+		CHECK(text_with_special_chars.to_upper() == "HELLO -WORLD_123!!?");
+
+		string random_case = "HeLloWorld";
+		CHECK(random_case.to_upper() == "HELLOWORLD");
+
+		string empty_string = "";
+		CHECK(empty_string.to_upper() == "");
+
+		string short_string = "a";
+		CHECK(short_string.to_upper() == "A");
+	}
+
+	string string::to_lower() const
+	{
+		seed::string result = data();
+
+		for (int i = 0; i < size(); i++)
+		{
+			if (is_upper_case(result.data()[i]))
+				result.mutable_data()[i] += 32;
+		}
+
+		return result;
+	}
+
+	TEST_CASE("Change all letters in the string to lowercase")
+	{
+		string alphabet = UPPERCASE_ALPHABET;
+		CHECK(alphabet.to_lower() == LOWERCASE_ALPHABET);
+
+		string text_with_special_chars = "HELLO -WORLD_123!!?";
+		CHECK(text_with_special_chars.to_lower() == "hello -world_123!!?");
+
+		string random_case = "HeLloWorld";
+		CHECK(random_case.to_lower() == "helloworld");
+
+		string empty_string = "";
+		CHECK(empty_string.to_lower() == "");
+
+		string short_string = "A";
+		CHECK(short_string.to_lower() == "a");
 	}
 
 	void string::clear()

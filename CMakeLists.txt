@@ -23,6 +23,7 @@ set(MATH_SRC
 set(STRING_SRC
 	src/strings/clean_decimals.cpp
 	src/strings/trim_char.cpp
+	src/strings/char_case.cpp
 	src/strings/string.cpp)
 
 set(FILESYSTEM_SRC

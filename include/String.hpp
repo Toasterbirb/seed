@@ -32,6 +32,9 @@ namespace seed
 		bool ends_with(seed::string text) const;
 		bool is_digit() const;
 		bool is_number() const;
+		bool is_upper() const;
+		bool is_lower() const;
+		bool is_letters(bool accept_whitespace = false) const;
 		bool empty() const;
 
 		int find(seed::string text) const;
@@ -40,9 +43,12 @@ namespace seed
 		int find_last_char(char c) const;
 
 		string clean_decimals() const;
+		string replace(seed::string old_str, seed::string new_str) const;
+		string reverse() const;
 		string trim(char c) const;
 		string trim_until(char c, trim_mode mode = trim_mode::start) const;
-		string replace(seed::string old_str, seed::string new_str) const;
+		string to_upper() const;
+		string to_lower() const;
 
 		void clear();
 
