@@ -8,6 +8,11 @@ namespace seed
 	class string
 	{
 	public:
+		enum trim_mode
+		{
+			start, end, both
+		};
+
 		string();
 		string(const char* text);
 		string(char text[]);
@@ -26,12 +31,17 @@ namespace seed
 		bool starts_with(seed::string text) const;
 		bool ends_with(seed::string text) const;
 		bool is_digit() const;
+		bool is_number() const;
 		bool empty() const;
 
 		int find(seed::string text) const;
+		int find_char(char c) const;
+		int find_last(seed::string text) const;
+		int find_last_char(char c) const;
 
 		string clean_decimals() const;
 		string trim(char c) const;
+		string trim_until(char c, trim_mode mode = trim_mode::start) const;
 		string replace(seed::string old_str, seed::string new_str) const;
 
 		void clear();

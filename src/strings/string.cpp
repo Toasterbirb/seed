@@ -201,7 +201,50 @@ namespace seed
 	bool string::is_digit() const
 	{
 		/* An empty string can't really be a number */
-		if (size() == 0)
+		if (empty())
+			return false;
+
+		for (int i = 0; i < size(); i++)
+			if ((data()[i] < 48 || data()[i] > 58) && data()[i] != '-')
+				return false;
+
+		return true;
+	}
+
+	TEST_CASE("Check if a string is a digit (not floating point number)")
+	{
+		string text = "asdf";
+		CHECK_FALSE(text.is_digit());
+
+		text = "";
+		CHECK_FALSE(text.is_number());
+
+		text = " ";
+		CHECK_FALSE(text.is_number());
+
+		text = "0.005";
+		CHECK_FALSE(text.is_digit());
+
+		text = "0,005";
+		CHECK_FALSE(text.is_digit());
+
+		text = "1.2";
+		CHECK_FALSE(text.is_digit());
+
+		text = "0005";
+		CHECK(text.is_digit());
+
+		for (int i = -10; i < 10; i++)
+		{
+			text = i;
+			CHECK(text.is_digit());
+		}
+	}
+
+	bool string::is_number() const
+	{
+		/* An empty string can't really be a number */
+		if (empty())
 			return false;
 
 		for (int i = 0; i < size(); i++)
@@ -211,34 +254,34 @@ namespace seed
 		return true;
 	}
 
-	TEST_CASE("Check if the string is a digit")
+	TEST_CASE("Check if the string is a number")
 	{
 		string text = "asdf";
-		CHECK_FALSE(text.is_digit());
+		CHECK_FALSE(text.is_number());
 
 		text = "1234asdf";
-		CHECK_FALSE(text.is_digit());
+		CHECK_FALSE(text.is_number());
 
 		text = "ö'asöfvy6835";
-		CHECK_FALSE(text.is_digit());
+		CHECK_FALSE(text.is_number());
 
 		text = "";
-		CHECK_FALSE(text.is_digit());
+		CHECK_FALSE(text.is_number());
 
 		text = " ";
-		CHECK_FALSE(text.is_digit());
+		CHECK_FALSE(text.is_number());
 
 		/* Go trough a few negative and positive numbers */
 		for (int i = -10; i < 10; i++)
 		{
 			text = i;
-			CHECK(text.is_digit());
+			CHECK(text.is_number());
 		}
 
 		for (float i = -10.05f; i < 10.0f; i += 2.4f)
 		{
 			text = i;
-			CHECK(text.is_digit());
+			CHECK(text.is_number());
 		}
 	}
 
@@ -260,7 +303,7 @@ namespace seed
 	{
 		/* Check if the string even has any chars in it.
 		 * If so, cancel */
-		if (!is_digit())
+		if (!is_number())
 			return *this;
 
 		return CleanDecimals(data());
@@ -320,6 +363,50 @@ namespace seed
 		CHECK(string_with_whitespaces.trim(' ') == "asdf");
 	}
 
+	string string::trim_until(char c, trim_mode mode) const
+	{
+		seed::string result = data();
+		int start_index = 0;
+		int end_index = 0;
+
+		/* Trim from the beginning */
+		if (mode != string::trim_mode::end)
+		{
+			start_index = result.find_char(c);
+			result = result.data().substr(start_index + 1, result.size() - start_index - 1);
+		}
+
+		/* Trim from the end */
+		if (mode != string::trim_mode::start)
+		{
+			end_index = result.find_last_char(c);
+			result = result.data().substr(0, end_index);
+		}
+
+		return result;
+	}
+
+	TEST_CASE("Trim the text until some specific char is encountered")
+	{
+		string text = "<div>text</div>";
+
+		SUBCASE("Trim from the beginning")
+		{
+			CHECK(text.trim_until('>') == "text</div>");
+			CHECK(text.trim_until('>', string::trim_mode::start) == "text</div>");
+		}
+
+		SUBCASE("Trim from the end")
+		{
+			CHECK(text.trim_until('<', string::trim_mode::end) == "<div>text");
+		}
+
+		SUBCASE("Trim from both sides")
+		{
+			CHECK(text.trim_until('t', string::trim_mode::both) == "ex");
+		}
+	}
+
 	int string::find(seed::string text) const
 	{
 		/* Check if the strings are the same */
@@ -371,6 +458,102 @@ namespace seed
 
 		string short_text = "test";
 		CHECK(text.find("longer text") == -1);
+	}
+
+	int string::find_char(char c) const
+	{
+		for (int i = 0; i < size(); i++)
+			if (data()[i] == c)
+				return i;
+
+		return -1;
+	}
+
+	TEST_CASE("Find the first occurrence of a char")
+	{
+		string text = "lol";
+		CHECK(text.find_char('o') == 1);
+		CHECK(text.find_char('l') == 0);
+		CHECK(text.find_char('a') == -1);
+
+		string empty_string = "";
+		CHECK(empty_string.find_char('a') == -1);
+	}
+
+	int string::find_last(seed::string text) const
+	{
+		/* Check if the strings are the same */
+		if (*this == text)
+			return 0;
+
+		/* Check if the text we are looking for even fits into the parent string */
+		if (size() < text.size())
+			return -1;
+
+		/* Check if the target text has any chars in it */
+		if (text.size() == 0)
+			return -1;
+
+		/* Find the first last character */
+		for (int i = size() -1; i > -1; i--)
+		{
+			if (data()[i] == text.data()[0])
+			{
+				/* First char was found, check if the characters next to it are
+				 * the rest of the text we are looking for */
+				bool mismatch = false;
+
+				for (int j = 0; j < text.size(); j++)
+				{
+					if (data()[i + j] != text.data()[j])
+					{
+						mismatch = true;
+						break;
+					}
+				}
+
+				if (!mismatch)
+					return i;
+			}
+		}
+
+		return -1;
+	}
+
+	TEST_CASE("Find the last occurrence of a string inside of another string")
+	{
+		string text = "asd dsa asd dsa";
+		CHECK(text.find_last("asd") == 8);
+		CHECK(text.find_last("dsa") == 12);
+		CHECK(text.find_last("") == -1);
+		CHECK(text.find_last(text) == 0);
+
+		string short_text = "test";
+		CHECK(text.find_last("longer text") == -1);
+	}
+
+	int string::find_last_char(char c) const
+	{
+		/* Make sure the string isn't empty */
+		if (empty())
+			return -1;
+
+		for (int i = size() - 1; i > -1; i--)
+			if (data()[i] == c)
+				return i;
+
+		return -1;
+	}
+
+	TEST_CASE("Find the first occurrence of a char, but in reverse")
+	{
+		string text = "lmao";
+		CHECK(text.find_last_char('o') == 3);
+		CHECK(text.find_last_char('l') == 0);
+		CHECK(text.find_last_char('e') == -1);
+
+		string empty_string = "";
+		CHECK(empty_string.find_last_char('a') == -1);
 	}
 
 	string string::replace(seed::string old_str, seed::string new_str) const
