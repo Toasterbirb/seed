@@ -22,7 +22,8 @@ set(MATH_SRC
 
 set(STRING_SRC
 	src/strings/clean_decimals.cpp
-	src/strings/trim_char.cpp)
+	src/strings/trim_char.cpp
+	src/strings/string.cpp)
 
 set(FILESYSTEM_SRC
 	src/filesystem/filepaths.cpp

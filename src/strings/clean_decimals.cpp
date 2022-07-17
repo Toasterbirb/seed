@@ -3,9 +3,9 @@
 
 namespace seed
 {
-	std::string CleanDecimals(const double& value)
+	std::string CleanDecimals(const std::string& value)
 	{
-		std::string result = std::to_string(value);
+		std::string result = value;
 		int size = (int)result.size();
 		for (int i = size - 1; i > 0; i--)
 		{
@@ -21,6 +21,11 @@ namespace seed
 			result.erase(result.size() - 1, 1);
 
 		return result;
+	}
+
+	std::string CleanDecimals(const double& value)
+	{
+		return CleanDecimals(std::to_string(value));
 	}
 
 	TEST_CASE("Clean unnecessary decimals from floating point values")

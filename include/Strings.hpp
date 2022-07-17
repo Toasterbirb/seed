@@ -3,6 +3,8 @@
 
 namespace seed
 {
+	std::string CleanDecimals(const std::string& value); 	// Remove decimal points from the end of a string
+
 	std::string CleanDecimals(const double& value); // Convert floating point numbers to strings and remove
 													// unnecessary decimal values
 
