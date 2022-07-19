@@ -15,16 +15,29 @@ namespace seed
 		return content;
 	}
 
-	std::vector<std::string> ReadFileLines(const std::string& filepath)
+	std::vector<std::string> ReadFileLines(const std::string& filepath, const bool& ignore_comments)
 	{
 		std::vector<std::string> lines;
 
 		std::ifstream file(filepath);
 		std::string tmp_line;
 
-		while (std::getline(file, tmp_line))
+		if (ignore_comments)
 		{
-			lines.push_back(tmp_line);
+			while (std::getline(file, tmp_line))
+			{
+				if (tmp_line[0] == '#')
+					continue;
+
+				lines.push_back(tmp_line);
+			}
+		}
+		else
+		{
+			while (std::getline(file, tmp_line))
+			{
+				lines.push_back(tmp_line);
+			}
 		}
 
 		return lines;
@@ -44,7 +57,7 @@ namespace seed
 	TEST_CASE("Write to a file and read the contents")
 	{
 		std::string temporary_file = TmpFile();
-		const std::string text = "line one\nline two\nthird line\n";
+		const std::string text = "line one\nline two\nthird line\n# comment line\nlast line\n";
 
 		/* Write to a file */
 		CHECK(WriteFile(text, temporary_file));
@@ -56,10 +69,20 @@ namespace seed
 
 		/* Read the file line by line */
 		std::vector<std::string> lines = ReadFileLines(temporary_file);
-		CHECK(lines.size() == 3);
+		CHECK(lines.size() == 5);
 		CHECK(lines[0] == "line one");
 		CHECK(lines[1] == "line two");
 		CHECK(lines[2] == "third line");
+		CHECK(lines[3] == "# comment line");
+		CHECK(lines[4] == "last line");
+
+		/* Read the file line by line again, but this time ignore comment lines */
+		lines = ReadFileLines(temporary_file, true);
+		CHECK(lines.size() == 4);
+		CHECK(lines[0] == "line one");
+		CHECK(lines[1] == "line two");
+		CHECK(lines[2] == "third line");
+		CHECK(lines[3] == "last line");
 
 		if (std::filesystem::exists(temporary_file))
 			std::filesystem::remove(temporary_file);
