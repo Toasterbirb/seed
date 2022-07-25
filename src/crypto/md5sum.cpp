@@ -58,7 +58,7 @@ namespace seed
 		std::ifstream random_file("/dev/urandom");
 		if (!random_file.is_open())
 		{
-			std::cerr << "Coudn't open /dev/random for reading!" << std::endl;
+			std::cerr << "Coudn't open /dev/urandom for reading!" << std::endl;
 		}
 
 		char buffer[sample_size];

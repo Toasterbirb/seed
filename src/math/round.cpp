@@ -5,7 +5,7 @@ namespace seed
 {
 	double Round(const double& value, const int& accuracy)
 	{
-		/* How this thing works: 
+		/* How this thing works:
 		 * 1. Multiply the value with 10 ^ decimal points. This will leave the needed values before the decimal point
 		 * 2. Round to integer
 		 * 3. Divide the value with 10 ^ decimal points to get the desired rounded decimal value

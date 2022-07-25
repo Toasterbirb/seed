@@ -15,9 +15,9 @@ namespace seed
 		return content;
 	}
 
-	std::vector<std::string> ReadFileLines(const std::string& filepath, const bool& ignore_comments)
+	std::vector<seed::string> ReadFileLines(const std::string& filepath, const bool& ignore_comments)
 	{
-		std::vector<std::string> lines;
+		std::vector<seed::string> lines;
 
 		std::ifstream file(filepath);
 		std::string tmp_line;
@@ -68,7 +68,7 @@ namespace seed
 		CHECK(ReadFile(temporary_file) == text);
 
 		/* Read the file line by line */
-		std::vector<std::string> lines = ReadFileLines(temporary_file);
+		std::vector<seed::string> lines = ReadFileLines(temporary_file);
 		CHECK(lines.size() == 5);
 		CHECK(lines[0] == "line one");
 		CHECK(lines[1] == "line two");
