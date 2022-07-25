@@ -453,6 +453,9 @@ namespace seed
 
 		string empty_string = "";
 		CHECK(empty_string.find_char('a') == -1);
+
+		string hyperlink = "<a href=\"https://example.com\">Link</a>";
+		CHECK(hyperlink.find_char('>') == 29);
 	}
 
 	int string::find_last(seed::string text) const
@@ -657,6 +660,32 @@ namespace seed
 		}
 
 		CHECK(string_with_whitespaces.trim(' ') == "asdf");
+	}
+
+	string string::trim_between(char a, char b) const
+	{
+		/* Finds the first instance of a and b, and removes everything between them */
+		int a_pos = find_char(a);
+		int b_pos = find_char(b);
+
+		if (a_pos == -1 || b_pos == -1)
+			return *this;
+
+		/* Don't do anything if b is after a */
+		if (b < a)
+			return *this;
+
+		return data().erase(a_pos, b_pos - a_pos + 1);
+	}
+
+	TEST_CASE("Remove text between two given chars")
+	{
+		string link = "Here's some link: <a href=https://example.com>This is the link</a>";
+		link = link.trim_between('<', '>');
+		CHECK(link == "Here's some link: This is the link</a>");
+
+		link = link.trim_between('<', '>');
+		CHECK(link == "Here's some link: This is the link");
 	}
 
 	string string::trim_until(char c, trim_mode mode) const
