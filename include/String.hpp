@@ -44,6 +44,7 @@ namespace seed
 
 		string clean_decimals() const;
 		string replace(seed::string old_str, seed::string new_str) const;
+		string replace_all(seed::string old_str, seed::string new_str) const;
 		string reverse() const;
 		string trim(char c) const;
 		string trim_between(char a, char b) const;
@@ -59,10 +60,20 @@ namespace seed
 			return (p_data == other.data());
 		}
 
+		bool operator!=(const seed::string& other) const
+		{
+			return (p_data != other.data());
+		}
+
 		/* Compare seed::string to char* */
 		bool operator==(const char* other)
 		{
 			return (p_data == other);
+		}
+
+		bool operator!=(const char* other)
+		{
+			return (p_data != other);
 		}
 
 		/* Compare seed::string to std::string */

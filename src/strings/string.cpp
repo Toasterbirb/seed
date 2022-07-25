@@ -595,6 +595,44 @@ namespace seed
 		CHECK(hello.replace(" ", "_") == "hello_world");
 	}
 
+	string string::replace_all(seed::string old_str, seed::string new_str) const
+	{
+		/* Don't operate on empty strings */
+		if (size() == 0)
+			return *this;
+
+		string result = *this;
+		string tmp_result = *this;
+
+		while (true)
+		{
+			tmp_result = result.replace(old_str, new_str);
+			if (tmp_result != result)
+				result = tmp_result;
+			else
+				break;
+		}
+
+		return result;
+	}
+
+	TEST_CASE("Replace all matching parts in a string with something")
+	{
+		string test_str = "string string::replace_all(seed::string old_str, seed::string new_str) const";
+		CHECK(test_str.replace_all("seed", "birb") == "string string::replace_all(birb::string old_str, birb::string new_str) const");
+		CHECK(test_str.replace_all("non-existant stuff", "test") == test_str);
+
+		string empty_string = "";
+		CHECK(empty_string.replace_all("testing", "should be empty") == "");
+
+		string short_string = "a";
+		CHECK(short_string.replace_all("b", "c") == short_string);
+		CHECK(short_string.replace_all("a", "b") == "b");
+
+		string only_text_to_replace = "aaaa";
+		CHECK(only_text_to_replace.replace_all("aa", "b") == "bb");
+	}
+
 	string string::reverse() const
 	{
 		/* You can't really reverse chars with length of <= 1 */
@@ -837,5 +875,12 @@ namespace seed
 
 		line *= 3;
 		CHECK(line == "---");
+	}
+
+	TEST_CASE("Non-Equality check")
+	{
+		string a = "hello";
+		string b = "world";
+		CHECK(a != b);
 	}
 }
