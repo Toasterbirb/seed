@@ -201,6 +201,41 @@ namespace seed
 		CHECK_FALSE(hello_world.ends_with("hello another world"));
 	}
 
+	bool string::contains(seed::string text) const
+	{
+		return (find(text) != -1);
+	}
+
+	TEST_CASE("Check if a string constains some other string")
+	{
+		string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+		CHECK(text.contains("amet"));
+		CHECK(text.contains("Lorem"));
+		CHECK(text.contains("elit"));
+		CHECK(text.contains(" "));
+		CHECK_FALSE(text.contains("elitt"));
+		CHECK_FALSE(text.contains(""));
+		CHECK_FALSE(text.contains("aaa"));
+	}
+
+	bool string::contains(char c) const
+	{
+		return (find_char(c) != -1);
+	}
+
+	TEST_CASE("Check if a string constains some char")
+	{
+		string text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit";
+		CHECK(text.contains('o'));
+		CHECK(text.contains('L'));
+		CHECK(text.contains(' '));
+		CHECK(text.contains('a'));
+		CHECK(text.contains(','));
+		CHECK_FALSE(text.contains('x'));
+		CHECK_FALSE(text.contains('z'));
+		CHECK_FALSE(text.contains('.'));
+	}
+
 	bool string::is_digit() const
 	{
 		/* An empty string can't really be a number */

@@ -30,6 +30,8 @@ namespace seed
 
 		bool starts_with(seed::string text) const;
 		bool ends_with(seed::string text) const;
+		bool contains(seed::string text) const;
+		bool contains(char c) const;
 		bool is_digit() const;
 		bool is_number() const;
 		bool is_upper() const;
