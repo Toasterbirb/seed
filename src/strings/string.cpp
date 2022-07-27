@@ -388,12 +388,14 @@ namespace seed
 		if (*this == text)
 			return 0;
 
+		int text_size = text.size();
+
 		/* Check if the text we are looking for even fits into the parent string */
-		if (size() < text.size())
+		if (size() < text_size)
 			return -1;
 
 		/* Check if the target text has any chars in it */
-		if (text.size() == 0)
+		if (text_size == 0)
 			return -1;
 
 		/* Find the first character */
@@ -405,7 +407,7 @@ namespace seed
 				 * the rest of the text we are looking for */
 				bool mismatch = false;
 
-				for (int j = 0; j < text.size(); j++)
+				for (int j = 1; j < text_size; j++)
 				{
 					if (data()[i + j] != text.data()[j])
 					{
