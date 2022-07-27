@@ -675,6 +675,44 @@ namespace seed
 		CHECK(null_str.reverse() == "");
 	}
 
+	string string::substr(int start_pos, int end_pos) const
+	{
+		int start 	= start_pos;
+		int end 	= end_pos;
+
+		if (start < 0)
+			start = 0;
+
+		if (end > size() - 1)
+			end = size() - 1;
+
+		if (end < start)
+			return *this;
+
+		if (start == 0 && end == size() -1)
+			return *this;
+
+		if (start == end)
+			return data().substr(start, 1);
+
+		return data().substr(start, end - start + 1);
+	}
+
+	TEST_CASE("Get a range of chars inside of the string")
+	{
+		string hello_world = "Hello world!";
+		CHECK(hello_world.substr(0, hello_world.size() - 1) == hello_world);
+		CHECK(hello_world.substr(1, hello_world.size() - 2) == "ello world");
+		CHECK(hello_world.substr(3, 6) == "lo w");
+		CHECK(hello_world.substr(4, 0) == hello_world);
+		CHECK(hello_world.substr(0, hello_world.size() + 5) == hello_world);
+		CHECK(hello_world.substr(3, hello_world.size() + 5) == "lo world!");
+		CHECK(hello_world.substr(-1, 4) == "Hello");
+		CHECK(hello_world.substr(-5, hello_world.size() + 5) == hello_world);
+		CHECK(hello_world.substr(1, 1) == "e");
+		CHECK(hello_world.substr(1, 2) == "el");
+	}
+
 	string string::trim(char c) const
 	{
 		return TrimChar(data(), c);
