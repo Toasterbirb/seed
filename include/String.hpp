@@ -51,6 +51,7 @@ namespace seed
 		string substr(int start_pos, int end_pos) const;
 		string trim(char c) const;
 		string trim_between(char a, char b) const;
+		string trim_between(int start_pos, int end_pos) const;
 		string trim_until(char c, trim_mode mode = trim_mode::start) const;
 		string to_upper() const;
 		string to_lower() const;

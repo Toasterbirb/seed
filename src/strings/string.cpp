@@ -801,6 +801,34 @@ namespace seed
 		CHECK(link == "Here's some link: This is the link");
 	}
 
+	string string::trim_between(int start_pos, int end_pos) const
+	{
+		int start 	= start_pos;
+		int end 	= end_pos;
+
+		if (start < 0)
+			start = 0;
+
+		if (end > size() - 1)
+			end = size() - 1;
+
+		if (end < start)
+			return *this;
+
+		return data().erase(start, end - start + 1);
+	}
+
+	TEST_CASE("Remove text between two points")
+	{
+		string text = "Some regular text with 123 numbers";
+		CHECK(text.trim_between(0, text.size() -1) == "");
+		CHECK(text.trim_between(1, text.size() - 2) == "Ss");
+		CHECK(text.trim_between(0, 4) == "regular text with 123 numbers");
+		CHECK(text.trim_between(-4, 4) == "regular text with 123 numbers");
+		CHECK(text.trim_between(12, text.size() + 4) == "Some regular");
+		CHECK(text.trim_between(6, 3) == text);
+	}
+
 	string string::trim_until(char c, trim_mode mode) const
 	{
 		seed::string result = data();
