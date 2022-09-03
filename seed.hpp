@@ -1,3 +1,4 @@
+#include "include/ArgsParser.hpp"
 #include "include/Math.hpp"
 #include "include/String.hpp"
 #include "include/Strings.hpp"

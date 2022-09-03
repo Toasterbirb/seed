@@ -35,6 +35,7 @@ set(CRYPTO_SRC
 	src/crypto/md5sum.cpp)
 
 set(MISC_SRC
+	src/misc/argsparser.cpp
 	src/misc/helloworld.cpp)
 
 if (TESTS)
