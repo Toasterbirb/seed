@@ -6,7 +6,9 @@ namespace seed
 {
 	ArgsParser::ArgsParser(const int& argc, char** argv)
 	:argc(argc), argv(argv)
-	{}
+	{
+		parse();
+	}
 
 	char** ArgsParser::c_args() const
 	{
@@ -140,8 +142,6 @@ namespace seed
 				(char*)"--foo", (char*)"bar"
 			};
 			ArgsParser arg_parser(arg_count, valid_args);
-
-			CHECK(arg_parser.parse());
 
 			/* Check that the values match */
 			CHECK(arg_parser.key()["t"] == "some title");
