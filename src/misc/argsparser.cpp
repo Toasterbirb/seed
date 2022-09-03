@@ -100,14 +100,10 @@ namespace seed
 			if (is_short_key(argv[i]) || is_long_key(argv[i]))
 			{
 				/* Check if the key has a value */
-				if (i == argc - 1)
-					break;
-
-
 				seed::string trimmed_key = argv[i];
 				trimmed_key = trimmed_key.trim('-');
 
-				if (!is_key(argv[i + 1]))
+				if (i < argc - 1 && !is_key(argv[i + 1]))
 				{
 					key_values[trimmed_key.data()] = argv[i + 1];
 					i++;
@@ -153,6 +149,18 @@ namespace seed
 			CHECK_FALSE(arg_parser.has_key("testasdf"));
 
 			CHECK(arg_parser.is_valid());
+		}
+
+		SUBCASE("A single argument")
+		{
+			const int arg_count = 2;
+			char* arguments[arg_count] = {
+				(char*)"/some/path",
+				(char*)"--test"
+			};
+			ArgsParser arg_parser(arg_count, arguments);
+			CHECK(arg_parser.has_key("test"));
+			CHECK(arg_parser.key()["test"] == "true");
 		}
 
 		SUBCASE("Invalid arguments")
