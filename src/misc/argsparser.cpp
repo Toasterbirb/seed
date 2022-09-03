@@ -7,7 +7,7 @@ namespace seed
 	ArgsParser::ArgsParser(const int& argc, char** argv)
 	:argc(argc), argv(argv)
 	{
-		parse();
+		valid_args = parse();
 	}
 
 	char** ArgsParser::c_args() const
@@ -151,6 +151,8 @@ namespace seed
 
 			CHECK(arg_parser.has_key("test"));
 			CHECK_FALSE(arg_parser.has_key("testasdf"));
+
+			CHECK(arg_parser.is_valid());
 		}
 
 		SUBCASE("Invalid arguments")
@@ -175,6 +177,7 @@ namespace seed
 			ArgsParser arg_parser(arg_count, invalid_args);
 
 			CHECK_FALSE(arg_parser.parse());
+			CHECK_FALSE(arg_parser.is_valid());
 		}
 
 		SUBCASE("Invalid arg count")
@@ -187,6 +190,7 @@ namespace seed
 			ArgsParser arg_parser(arg_count, arguments);
 
 			CHECK_FALSE(arg_parser.parse());
+			CHECK_FALSE(arg_parser.is_valid());
 		}
 	}
 
@@ -201,5 +205,10 @@ namespace seed
 			return true;
 
 		return false;
+	}
+
+	bool ArgsParser::is_valid() const
+	{
+		return valid_args;
 	}
 }
