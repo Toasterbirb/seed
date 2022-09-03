@@ -495,6 +495,28 @@ namespace seed
 		CHECK(hyperlink.find_char('>') == 29);
 	}
 
+	int string::find_char(char c, int start_pos) const
+	{
+		for (int i = start_pos; i < size(); i++)
+			if (data()[i] == c)
+				return i;
+
+		return -1;
+	}
+
+	TEST_CASE("Find the first occurrence of a char with custom starting point")
+	{
+		string text = "lol";
+		CHECK(text.find_char('l', 1) == 2);
+		CHECK(text.find_char('a') == -1);
+
+		string empty_string = "";
+		CHECK(empty_string.find_char('a', 0) == -1);
+
+		string hyperlink = "<a href=\"https://example.com\">Link</a>";
+		CHECK(hyperlink.find_char('>', 30) == hyperlink.size() - 1);
+	}
+
 	int string::find_last(seed::string text) const
 	{
 		/* Check if the strings are the same */

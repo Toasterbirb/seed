@@ -41,6 +41,7 @@ namespace seed
 
 		int find(seed::string text) const;
 		int find_char(char c) const;
+		int find_char(char c, int start_pos) const;
 		int find_last(seed::string text) const;
 		int find_last_char(char c) const;
 
